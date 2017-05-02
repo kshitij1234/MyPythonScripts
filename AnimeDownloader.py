@@ -1,10 +1,10 @@
-import requests,bs4,re,sys
+import requests,bs4,re,sys,os
 
 #provide first url
-url="http://animeheaven.eu/i.php?a=Fairy%20Tail%20Dubbed"
+url="http://animeheaven.eu/i.php?a=Fate%20Stay%20Night%20-%20Unlimited%20Blade%20Works%202%20Dubbed"
 mainsite="http://animeheaven.eu/"
 
-destination="D:\\Anime\\Fairy Tail\\"
+destination="D:\\Anime\\Fate Stay Night - Unlimited Blade Works S2\\"
 r=requests.get(url)
 
 try:
@@ -14,10 +14,13 @@ except:
     sys.exit(1)
 print("Got access to Main List of episodes")
 
+if not os.path.exists(os.path.dirname(destination)):
+    os.makedirs(os.path.dirname(destination))
+
 soup=bs4.BeautifulSoup(r.text,"html.parser")
 
-dpages=soup.select(".infoepbox a")
-
+dpages=soup.select(".infoepbox > a")
+#print(dpages)
 #now iterate over all episode pages
 for i in range(len(dpages)-1,-1,-1):
 
@@ -34,11 +37,11 @@ for i in range(len(dpages)-1,-1,-1):
     soup2=bs4.BeautifulSoup(r2.text,"html.parser")
 
     dlink=soup2.select("script")
-
-    #the 6th script contains my link
+    #print(dlink[4])
+    #the 5th script contains my link
 
     mylink=re.compile(r"href='(.*)'")
-    downlink=mylink.search(str(dlink[6]))[1]
+    downlink=mylink.search(str(dlink[4]))[1]
 
     print("Starting download of Episode : "+str(len(dpages)-i))
     downloaded=requests.get(downlink)
